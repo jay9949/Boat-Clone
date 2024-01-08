@@ -16,7 +16,7 @@ const ProductDetails = ({ product, products }) => {
 
   return (
     <div>
-      <div className="product-detail-container">
+      <div className="product-detail-container" key={product._id}>
         <div>
           <div className="image-container">
             <img

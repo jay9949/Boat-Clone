@@ -7,7 +7,7 @@ import { urlFor } from '../../lib/Client';
 
 const Cart = ({ item, image }) => {
     const cartRef = useRef();
-    const { totalPrice, totalQuantities, cartItems, setShowCart } = useStateContext()
+    const { totalPrice, totalQuantities, cartItems, setShowCart, toggleCartItemQuantity } = useStateContext()
     return (
         <div className='cart-wrapper' ref={cartRef}>
             <div className='cart-container'>
@@ -31,6 +31,7 @@ const Cart = ({ item, image }) => {
 
                 <div className='product-container'>
                     {cartItems.length >= 1 && cartItems.map((item) => {
+                        console.log(cartItems, 'State')
                         return (
                             <div className='product' key={item._id}>
                                 <img src={urlFor(item?.image[0])} className='cart-product-image' />
@@ -42,13 +43,13 @@ const Cart = ({ item, image }) => {
                                     <div className=' flex bottom'>
                                         <div>
                                             <p className="quantity-desc">
-                                                <span className="minus" onClick="">
+                                                <span className="minus" onClick={() => toggleCartItemQuantity(item._id, 'dec')}>
                                                     <AiOutlineMinus />
                                                 </span>
                                                 <span className="num" onClick="">
-                                                    0
+                                                    {item.quantity}
                                                 </span>
-                                                <span className="plus" onClick="">
+                                                <span className="plus" onClick={() => toggleCartItemQuantity(item._id, 'inc')}>
                                                     <AiOutlinePlus />
                                                 </span>
                                             </p>

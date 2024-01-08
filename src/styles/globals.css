@@ -455,6 +455,8 @@ span.text-red {
     right: 5px;
     width: 100%;
     padding: 30px 65px;
+    font-weight: bold;
+    background-color: white;
 
 }
 
