@@ -10,15 +10,15 @@ import { Product } from "@/components";
 import { useStateContext } from "../../../context/StateContext";
 
 const ProductDetails = ({ product, products }) => {
-  const { image, name, details, price } = product;
+  const { image, name, details, price, _id } = product;
   const [index, setIndex] = useState(0);
   const { decQty, incQty, qty, onAdd } = useStateContext();
 
   return (
     <div>
-      <div className="product-detail-container" key={product._id}>
+      <div className="product-detail-container">
         <div>
-          <div className="image-container">
+          <div className="image-container" key={_id}>
             <img
               src={urlFor(image && image[index])}
               className="product-detail-image"
@@ -57,9 +57,7 @@ const ProductDetails = ({ product, products }) => {
               <span className="minus" onClick={decQty}>
                 <AiOutlineMinus />
               </span>
-              <span className="num" onClick="">
-                {qty}
-              </span>
+              <span className="num">{qty}</span>
               <span className="plus" onClick={incQty}>
                 <AiOutlinePlus />
               </span>
@@ -73,7 +71,7 @@ const ProductDetails = ({ product, products }) => {
             >
               Add to Cart
             </button>
-            <button type="button" className="buy-now" onClick="">
+            <button type="button" className="buy-now">
               Buy Now
             </button>
           </div>
@@ -104,7 +102,7 @@ export const getStaticPaths = async () => {
 
   const paths = products.map((product) => ({
     params: {
-      slug: product.slug.current,
+      slug: product.slug?.current || "",
     },
   }));
   return {
@@ -114,8 +112,8 @@ export const getStaticPaths = async () => {
 };
 
 export async function getStaticProps({ params: { slug } }) {
-  const query = `*[_type == "product" && slug.current == '${slug}'][0] { image, name, details, price}`;
-  const productsQuery = `*[_type == "product" && defined(slug.current)] { image, name, details, price, "slug": slug.current}`;
+  const query = `*[_type == "product" && slug.current == '${slug}'][0] { image, name, details, price, _id}`;
+  const productsQuery = `*[_type == "product" && defined(slug.current)] { image, name, details, price, _id , "slug": slug.current}`;
   const product = await client.fetch(query);
   const products = await client.fetch(productsQuery);
 
