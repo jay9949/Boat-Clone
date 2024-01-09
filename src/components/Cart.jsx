@@ -4,31 +4,31 @@ import { AiOutlineLeft, AiOutlineMinus, AiOutlinePlus, AiOutlineShopping } from 
 import { TiDeleteOutline } from "react-icons/ti"
 import Link from 'next/link';
 import { urlFor } from '../../lib/Client';
-import getStripe from '../../lib/getStripe';
 import toast from 'react-hot-toast';
+import getStripe from '../../lib/getStripe';
 
 const Cart = ({ item, image }) => {
     const cartRef = useRef();
-    const { totalPrice, totalQuantities, cartItems, setShowCart, toggleCartItemQuantity, onRemove } = useStateContext()
+    const { totalPrice, totalQuantities, cartItems, setShowCart, toggleCartItemQuantity, onRemove } = useStateContext();
 
     const handleCheckout = async () => {
-        const stripe = await getStripe()
+        const stripe = await getStripe();
 
         const response = await fetch('/api/stripe', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(cartItems)
-        })
+            body: JSON.stringify(cartItems),
+        });
 
         if (response.statusCode === 500) return;
 
         const data = await response.json();
 
-        toast.loading('Redirecting...')
+        toast.loading('Redirecting...');
 
-        stripe.redirectToCheckout({ sessionId: data.id })
+        stripe.redirectToCheckout({ sessionId: data.id });
     }
 
     return (
@@ -54,7 +54,6 @@ const Cart = ({ item, image }) => {
 
                 <div className='product-container'>
                     {cartItems.length >= 1 && cartItems.map((item) => {
-                        console.log(cartItems, 'State')
                         return (
                             <div className='product' key={item._id}>
                                 <img src={urlFor(item?.image[0])} className='cart-product-image' />
@@ -86,19 +85,20 @@ const Cart = ({ item, image }) => {
                         )
                     })}
                 </div>
-                {cartItems.length >= 1 && (
-                    <div className='cart-bottom'>
-                        <div className='total'>
-                            <h3>SubTotal:</h3>
-                            <h3>${totalPrice}</h3>
+                {cartItems.length >= 1 &&
+                    (
+                        <div className='cart-bottom'>
+                            <div className='total'>
+                                <h3>SubTotal:</h3>
+                                <h3>${totalPrice}</h3>
+                            </div>
+                            <div className='btn-container'>
+                                <button type="button" className='btn' onClick={handleCheckout}>
+                                    Pay
+                                </button>
+                            </div>
                         </div>
-                        <div className='btn-container'>
-                            <button type="button" className='btn' onClick={handleCheckout}>
-                                Pay
-                            </button>
-                        </div>
-                    </div>
-                )}
+                    )}
             </div>
         </div>
     )
